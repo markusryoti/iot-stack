@@ -6,7 +6,6 @@ import os
 
 app = FastAPI()
 
-# Connect to InfluxDB (adjust for your setup)
 INFLUXDB_HOST = os.getenv("INFLUXDB_HOST", "localhost")
 INFLUXDB_PORT = int(os.getenv("INFLUXDB_PORT", 8086))
 INFLUXDB_DB = os.getenv("INFLUXDB_DB", "iot_edge")
@@ -15,7 +14,6 @@ client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
 client.create_database(INFLUXDB_DB)
 client.switch_database(INFLUXDB_DB)
 
-# Data model
 class SensorData(BaseModel):
     device_id: str
     temperature: float

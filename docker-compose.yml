@@ -33,6 +33,19 @@ services:
       - EDGE_SERVER_URL=http://edge-server:8000/ingest
     restart: always
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
 volumes:
   influxdb-data:
-
+  grafana-storage:
