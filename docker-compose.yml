@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=iot_edge
+
+  edge-server:
+    build: ./edge-server
+    container_name: edge-server
+    depends_on:
+      - influxdb
+    ports:
+      - "8000:8000"
+    environment:
+      - INFLUXDB_HOST=influxdb
+      - INFLUXDB_PORT=8086
+      - INFLUXDB_DB=iot_edge
+
+  esp32-simulator:
+    build: ./data-collector/
+    depends_on:
+      - edge-server
+    deploy:
+      replicas: 3
+    environment:
+      - EDGE_SERVER_URL=http://edge-server:8000/ingest
+    restart: always
+
+volumes:
+  influxdb-data:
+
